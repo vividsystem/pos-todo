@@ -1,4 +1,5 @@
 # pos-todo
+# :warning: work in progress
 A simple web app to print your todos and messages directly to a POS Printer
 
 ## Features
