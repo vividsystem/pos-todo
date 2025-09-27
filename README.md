@@ -22,8 +22,8 @@ This file uses a `.env` file for configuration
 
 | Field            | Type                  | Description                           | Required                         |
 | ---------------- | --------------------- | ------------------------------------- | -------------------------------- |
-| `PRINTER__PROFILE` | string                | [Printer profile](https://python-escpos.readthedocs.io/en/latest/printer_profi printeres/available-profiles.html) | No                               |
-| `PRINTER__CONNECTION`     | `"USB"` | `"NETWORK"` | Type of connection to the printer     | Yes                              |
+| `PRINTER__PROFILE` | string                | [Printer profile](https://python-escpos.readthedocs.io/en/latest/printer_profiles/available-profiles.html) | No                               |
+| `PRINTER__CONNECTION`     | `"USB"` \| `"NETWORK"` | Type of connection to the printer     | Yes                              |
 | `PRINTER__USB__VENDOR_ID`  | string                | Vendor ID of the USB printer          | Required if `PRINTER__CONNECTION=USB`     |
 | `PRINTER__USB__PRODUCT_ID` | string                | Product ID of the USB printer         | Required if `PRINTER__CONNECTION=USB`     |
 | `PRINTER__NETWORK__IP`     | string                | IP address of the network printer     | Required if `PRINTER__CONNECTION=NETWORK` |
@@ -34,4 +34,4 @@ This project is only possible thanks to [python-escpos](https://github.com/pytho
 
 
 ## License
-This project is licensed under the MIT License (see [LICENSE][./LICENSE] or https://opensource.org/licenses/MIT)
+This project is licensed under the MIT License (see [LICENSE](./LICENSE) or https://opensource.org/licenses/MIT)
