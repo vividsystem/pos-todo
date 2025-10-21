@@ -1,0 +1,68 @@
+import paho.mqtt.client as mqtt
+import paho.mqtt.subscribe as subscribe
+
+from printer import Printer
+import json
+import datetime
+
+
+client = mqtt.Client(client_id="pos-todo")
+
+
+def initialize():
+    client.subscribe("pos-todo/print/#")
+    client.on_connect = on_connect
+
+
+def on_connect(client, userdata, flags, rc):
+    print("CONNACK received with code %d." % (rc))
+
+
+def on_subscribe(client, userdata, mid, granted_qos):
+    print("Subscribed: " + str(mid) + " " + str(granted_qos))
+
+
+def on_message(client, userdata, msg):
+    print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+
+
+@client.topic_callback("pos-todo/print/message")
+def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTMessage):
+    try:
+        payload = json.loads(message.payload)
+    except Exception:
+        client.publish(
+            "pos-todo/status",
+            json.dumps({"status": "error", "message": "payload couldn't be parsed"}),
+        )
+
+    if "message" not in payload or not isinstance(payload["message"], str):
+        client.publish(
+            "pos-todo/status",
+            json.dumps(
+                {
+                    "status": "error",
+                    "message": "you have to specify a message in your payload",
+                }
+            ),
+        )
+
+    dt = datetime.datetime()
+    header = f"{dt.isoformat(timespec='seconds')} - TODOs"
+    if "header" in payload and isinstance(payload["header"], str):
+        header = payload["header"]
+
+    footer = "sent with pos-todo"
+    if "footer" in payload and isinstance(payload["footer"], str):
+        footer = payload["footer"]
+
+    userdata.printMessage(header, payload["message"], footer)
+    client.publish(
+        "pos-todo/status",
+        json.dumps(
+            {
+                "status": "success",
+                "message": "message sent successfully",
+            }
+        ),
+    )

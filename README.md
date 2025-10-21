@@ -1,5 +1,4 @@
 # pos-todo
-# :warning: work in progress
 A simple web app to print your todos and messages directly to a POS Printer
 
 ## Features
@@ -12,6 +11,22 @@ A simple web app to print your todos and messages directly to a POS Printer
 ## Software Requirements
 - python
 - uv (recommended for easy setup and running)
+
+
+## Installation
+1. Clone the repository
+2. Setup a MQTT Server (you can use the docker compose for that)
+3. Setup your POS-Printer
+If you have a USB-Printer make a udev rule for it.
+For that find out your product id and vendor id using for example `lsusb`
+Then create a udev rule in `/etc/udev/rules.d/99-pos-todo.rules`
+with this content:
+```
+SUBSYSTEM=="usb", ATTRS{idVendor}=="<YOURVENDORID>", ATTRS{idProduct}=="<YOURPRODUCTID>", MODE="0664", GROUP="dialout"
+```
+make sure to replace `<YOURVENDORID>` and `<YOURPRODUCTID>` with your actual ids.
+after that do `sudo service udev restart` or `sudo udevadm control --reload` to restart udev
+
 
 ## Usage 
 ```bash

@@ -1,0 +1,5 @@
+services:
+  mqtt-server:
+    image: "eclipse-mosquitto:latest"
+    ports:
+      - "1883:1883"
