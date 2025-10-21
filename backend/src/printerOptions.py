@@ -1,6 +1,6 @@
-from src.cfg import Settings
-from src.printer import Printer
-from src.printer.options import TextOptions
+from cfg import Settings
+from printer import Printer
+from printer.options import TextOptions
 
 
 s = Settings()
