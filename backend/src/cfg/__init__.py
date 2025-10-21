@@ -14,7 +14,7 @@ class NetworkSettings(BaseSettings):
 
 class MqttSettings(BaseSettings):
     host: str
-    port: str
+    port: int
 
 
 class Settings(BaseSettings):
