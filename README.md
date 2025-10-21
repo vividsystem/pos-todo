@@ -9,8 +9,10 @@ A simple web app to print your todos and messages directly to a POS Printer
 - ESC/POS-compatible printer
 
 ## Software Requirements
+### Backend
 - python
 - uv (recommended for easy setup and running)
+- cups
 
 
 ## Installation
