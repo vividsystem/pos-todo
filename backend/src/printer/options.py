@@ -32,7 +32,14 @@ class TextOptions:
             height=_clip(self.height, 1, 8) if self.height != 2 else None,
             density=_clip(self.invertColors, 0, 8),
             invert=self.invertColors,
-            smooth=(self.smooth if self.height >= 4 and self.width >= 4 else None),
+            smooth=(
+                self.smooth
+                if self.height is not None
+                and self.height >= 4
+                and self.width is not None
+                and self.width >= 4
+                else None
+            ),
             flip=self.flipTextDirection,
         )
 
