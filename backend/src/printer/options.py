@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Literal, Optional
-from escpos import Escpos
+from escpos.escpos import Escpos
 
 
 @dataclass
