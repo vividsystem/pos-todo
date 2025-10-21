@@ -14,7 +14,7 @@ class TextOptions:
     density: Optional[int] = None  # 0-8
     invertColors: Optional[bool] = None
     smooth: Optional[bool] = None
-    flipTextDirection: Optional[bool]
+    flipTextDirection: Optional[bool] = None
 
     def set(self, printer: Escpos):
         printer.set_with_default(
