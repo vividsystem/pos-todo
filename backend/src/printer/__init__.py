@@ -20,13 +20,19 @@ class Printer:
     def _printLine(self, line: str) -> None:
         self.driver.textln(line)
 
+    def _printBlock(self, block: str, col: int) -> None:
+        self.driver.textblock(block, col)
+
+    def _reset(self) -> None:
+        self.driver.set_with_default()
+
     def printMessage(self, header: str, content: str, footer: str) -> None:
         # print header
         # print content
         # print footer?
-        self.driver.textln(header)
+        self._printLine(header)
+        self.driver.ln(1)
+        self._printLine(content)
         self.driver.ln(2)
-        self.driver.textln(content)
-        self.driver.ln(2)
-        self.driver.textln(footer)
+        self._printLine(footer)
         self.driver.cut()
