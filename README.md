@@ -26,7 +26,7 @@ with this content:
 ```
 SUBSYSTEM=="usb", ATTRS{idVendor}=="<YOURVENDORID>", ATTRS{idProduct}=="<YOURPRODUCTID>", MODE="0664", GROUP="dialout"
 ```
-make sure to replace `<YOURVENDORID>` and `<YOURPRODUCTID>` with your actual ids.
+make sure to replace `<YOURVENDORID>` and `<YOURPRODUCTID>` (do not use a `0x` prefix. just the hex number) with your actual ids.
 after that do `sudo service udev restart` or `sudo udevadm control --reload` to restart udev
 
 
@@ -42,8 +42,8 @@ This file uses a `.env` file for configuration
 | ---------------- | --------------------- | ------------------------------------- | -------------------------------- |
 | `PRINTER__PROFILE` | string                | [Printer profile](https://python-escpos.readthedocs.io/en/latest/printer_profiles/available-profiles.html) | No                               |
 | `PRINTER__CONNECTION`     | `"USB"` \| `"NETWORK"` | Type of connection to the printer     | Yes                              |
-| `PRINTER__USB__VENDOR_ID`  | string                | Vendor ID of the USB printer          | Required if `PRINTER__CONNECTION=USB`     |
-| `PRINTER__USB__PRODUCT_ID` | string                | Product ID of the USB printer         | Required if `PRINTER__CONNECTION=USB`     |
+| `PRINTER__USB__VENDOR_ID`  | hex-string (no `0x` prefix) | Vendor ID of the USB printer          | Required if `PRINTER__CONNECTION=USB`     |
+| `PRINTER__USB__PRODUCT_ID` | hex-string (no `0x` prefix) | Product ID of the USB printer         | Required if `PRINTER__CONNECTION=USB`     |
 | `PRINTER__NETWORK__IP`     | string                | IP address of the network printer     | Required if `PRINTER__CONNECTION=NETWORK` |
 
 
