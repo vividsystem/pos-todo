@@ -15,6 +15,8 @@ class Printer:
         elif settings.connection == "NETWORK" and settings.network:
             self.driver = Network(settings.network.host, profile=settings.profile)
 
+        self.driver.open(raise_not_found=True)
+
     def _printLine(self, line: str) -> None:
         self.driver.textln(line)
 
