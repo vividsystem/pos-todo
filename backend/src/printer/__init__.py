@@ -6,6 +6,7 @@ from cfg import Settings
 
 class Printer:
     def __init__(self, settings: Settings) -> None:
+        self.text_width = 36
         if settings.connection == "USB" and settings.usb:
             self.driver = Usb(
                 int(settings.usb.vendor_id, 16),
@@ -18,7 +19,32 @@ class Printer:
         self.driver.open(raise_not_found=True)
 
     def _printLine(self, line: str) -> None:
-        self.driver.textln(line)
+        self.driver.textln(self._insertln(line))
+
+    def _insertln(self, text: str):
+        lines = []
+        current = ""
+        for word in text.split():
+            while len(word) > self.text_width:
+                part = word[: self.text_width - 1] + "-"
+                word = word[self.text_width - 1 :]
+                if current:
+                    # removes only trailing whitespaces
+                    # -> dont break intentional indentation
+                    lines.append(current.rstrip())
+                    current = ""
+                lines.append(part)
+
+        # 1 if current is for space between
+        if len(current) + len(word) + (1 if current else 0) <= self.text_width:
+            current += (" " if current else "") + word
+        else:
+            lines.append(current.rstrip())
+            current = word
+        if current:
+            lines(current.rstrip())
+
+        return "\n".join(lines)
 
     def _ln(self, n: int = 1) -> None:
         self.driver.ln(n)
