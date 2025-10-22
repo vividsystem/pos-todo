@@ -53,11 +53,11 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
     header = """
 
                    .-'\\
-                   \:. \\
+                   \\:. \\
                    |:.  \\
                    /::'  \\
                 __/:::.   \\
-        _.-'-.'`  `'.-'`'._\-"`";.-'-,
+        _.-'-.'`  `'.-'`'._\\-"`";.-'-,
      .`;    :      :     :      :   : `.
     / :     :      :                 :  \\
    /        :/\\          :   /\\ :     :  \\
