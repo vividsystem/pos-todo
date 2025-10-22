@@ -1,6 +1,6 @@
 from escpos.escpos import Escpos
 from escpos.printer import Network, Usb
-
+from printer.options import TextOptions
 from cfg import Settings
 
 
@@ -20,6 +20,9 @@ class Printer:
     def _printLine(self, line: str) -> None:
         self.driver.textln(line)
 
+    def _ln(self, n: int) -> None:
+        self.driver.ln(n)
+
     def _printBlock(self, block: str, col: int) -> None:
         self.driver.textblock(block, col)
 
@@ -27,12 +30,14 @@ class Printer:
         self.driver.set_with_default()
 
     def printMessage(self, header: str, content: str, footer: str) -> None:
-        # print header
-        # print content
-        # print footer?
+        TextOptions(bold=True, underlineType=2).set(self.driver)
         self._printLine(header)
-        self.driver.ln(1)
+        self._reset()
+        self._ln()
         self._printLine(content)
-        self.driver.ln(2)
+        self._ln(2)
         self._printLine(footer)
-        self.driver.cut()
+        TextOptions(align="center").set(self.driver)
+        self._ln()
+        self._printLine("---------")
+        self._ln(5)

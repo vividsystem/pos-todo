@@ -19,11 +19,11 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_subscribe(client, userdata, mid, granted_qos):
-    print("Subscribed: " + str(mid) + " " + str(granted_qos))
+    print(f"Subscribed: {str(mid)} {str(granted_qos)}")
 
 
 def on_message(client, userdata, msg):
-    print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+    print(f"{msg.topic} {str(msg.qos)} {str(msg.payload)}")
 
 
 @client.topic_callback("pos-todo/print/message")
@@ -56,6 +56,7 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
     if "footer" in payload and isinstance(payload["footer"], str):
         footer = payload["footer"]
 
+    print(f"print message: {payload['message']}")
     userdata.printMessage(header, payload["message"], footer)
     client.publish(
         "pos-todo/status",

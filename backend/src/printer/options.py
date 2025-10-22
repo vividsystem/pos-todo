@@ -26,8 +26,8 @@ class TextOptions:
             else None,
             double_height=self.height == 2,
             double_width=self.width == 2,
-            custom_size=(self.width is not None and self.width > 2)
-            or (self.width is not None and self.height > 2),
+            custom_size=(self.width is not None and self.width != 2)
+            or (self.width is not None and self.height != 2),
             width=_clip(self.width, 1, 8) if self.width != 2 else None,
             height=_clip(self.height, 1, 8) if self.height != 2 else None,
             density=_clip(self.invertColors, 0, 8),
@@ -44,6 +44,8 @@ class TextOptions:
         )
 
 
-def _clip(var: Optional[int], min: int, max: int, default: Optional[int] = None):
-    default: int = default if default is not None else min
-    return default if var is None else min if var < min else max if var > max else var
+def _clip(
+    val: Optional[int], min_val: int, max_val: int, default: Optional[int] = None
+):
+    default: int = default if default is not None else min_val
+    return max(min_val, min(val, max_val)) if val is not None else default
