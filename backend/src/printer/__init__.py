@@ -1,4 +1,3 @@
-from escpos.escpos import Escpos
 from escpos.printer import Network, Usb
 from printer.options import TextOptions
 from cfg import Settings
@@ -42,7 +41,7 @@ class Printer:
             lines.append(current.rstrip())
             current = word
         if current:
-            lines(current.rstrip())
+            lines.append(current.rstrip())
 
         return "\n".join(lines)
 
