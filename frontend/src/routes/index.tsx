@@ -5,9 +5,11 @@ import { MQTTContext } from "~/lib/context/mqtt";
 import ParticleBackground from "~/components/ParticleBackground";
 import { Leaf } from "lucide-solid";
 import IconGrid from "~/components/IconGrid";
+import { SettingsContext } from "~/lib/context/settings";
 
 export default function Home() {
 	const { client, statusStore } = useContext(MQTTContext)
+	const [settings] = useContext(SettingsContext)
 	const [status, setStatus] = statusStore
 	const [message, setMessage] = createSignal("")
 
@@ -16,14 +18,16 @@ export default function Home() {
 	return (
 		<main class="text-center mx-auto p-4 flex flex-col items-center justify-center">
 			<div class="flex flex-col items-start">
-				<TextArea label={"Message"} class="h-48 sm:text-xs lg:text-md xl:text-xl text-orange-300 bg-orange-800 p-2 rounded-md lg:h-96" placeholder="Your message goes here..." onInput={(ev) => setMessage(ev.currentTarget.value)} cols={36} />
+				<TextArea label={"Message"} placeholder="Your message goes here..." onInput={(ev) => setMessage(ev.currentTarget.value)} cols={36} />
 				<Button value={message()} onClick={(ev) => {
 					ev.preventDefault()
 					client.publish("pos-todo/print/message", JSON.stringify({
 						message: message(),
+						header: settings.header,
+						footer: settings.footer
 					}))
 					setMessage("")
-
+					ev.currentTarget.value = ""
 				}}>Print!</Button>
 			</div>
 		</main>
