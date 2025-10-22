@@ -1,5 +1,4 @@
 import paho.mqtt.client as mqtt
-import paho.mqtt.subscribe as subscribe
 
 from printer import Printer
 import json
@@ -12,6 +11,8 @@ client = mqtt.Client(client_id="pos-todo")
 def initialize():
     client.subscribe("pos-todo/print/#")
     client.on_connect = on_connect
+    client.on_subscribe = on_subscribe
+    client.on_message = on_message
 
 
 def on_connect(client, userdata, flags, rc):
