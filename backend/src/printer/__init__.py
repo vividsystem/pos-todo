@@ -20,7 +20,7 @@ class Printer:
     def _printLine(self, line: str) -> None:
         self.driver.textln(line)
 
-    def _ln(self, n: int) -> None:
+    def _ln(self, n: int = 1) -> None:
         self.driver.ln(n)
 
     def _printBlock(self, block: str, col: int) -> None:
