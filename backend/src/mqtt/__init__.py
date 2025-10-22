@@ -50,6 +50,37 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
 
     dt = datetime.datetime.now()
     header = f"{dt.isoformat(timespec='seconds')} - TODOs"
+    header = """
+
+                   .-'\\
+                   \:. \\
+                   |:.  \\
+                   /::'  \\
+                __/:::.   \\
+        _.-'-.'`  `'.-'`'._\-"`";.-'-,
+     .`;    :      :     :      :   : `.
+    / :     :      :                 :  \\
+   /        :/\\          :   /\\ :     :  \\
+  ;   :     /\\ \\   :     :  /\\ \\      :   ;
+ .    :    /  \\ \\          /  \\ \\         .
+ ;        /_)__\\ \\ :     :/_)__\\ \\    :    ;
+;         `-----`' : ,   :`-----`'          ;
+|    :      :       / \\         :     :           |
+|                  / \\ \\ :            :           |
+|    :      :     /___\\ \\:      :                |
+|    :      :     `----`'       :                   |
+;        |;-.,__   :     :   __.-'|   :            ;
+ ;    :  ||   \\ \\``/'---'\\`\\` /  ||        ;
+  .    :  \\   \\_\\/       \\_\\/   //   '   .
+           \\'._    /\\     /\\ _.-'/   :   ;
+    \\   :   `._`'-/ /\\._./ /\\  .'  :    /
+     `\\  :     `-.\\/__\\__\\/_.;'   :   /`
+       `\\  '   :   :        :   :  /`
+         `-`.__`        :   :__.'-`
+               `-..`.__.'..-
+
+pumpkin says:
+    """
     if "header" in payload and isinstance(payload["header"], str):
         header = payload["header"]
 
@@ -65,6 +96,11 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
             {
                 "status": "success",
                 "message": "message sent successfully",
+                "content": {
+                    "header": header,
+                    "message": payload["message"],
+                    "footer": footer,
+                },
             }
         ),
     )

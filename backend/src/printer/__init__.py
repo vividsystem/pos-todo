@@ -39,5 +39,5 @@ class Printer:
         self._printLine(footer)
         TextOptions(align="center").set(self.driver)
         self._ln()
-        self._printLine("---------")
-        self._ln(5)
+        self._printLine("--" * 15)
+        self._ln(8)
