@@ -48,7 +48,7 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
             ),
         )
 
-    dt = datetime.datetime()
+    dt = datetime.datetime.now()
     header = f"{dt.isoformat(timespec='seconds')} - TODOs"
     if "header" in payload and isinstance(payload["header"], str):
         header = payload["header"]
