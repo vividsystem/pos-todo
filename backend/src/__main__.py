@@ -10,6 +10,6 @@ if __name__ == "__main__":
 
     client.enable_logger()
     client.user_data_set(Printer(s))
-    initialize()
     client.connect(s.mqtt.host, s.mqtt.port)
+    initialize()
     client.loop_forever()

@@ -9,10 +9,10 @@ client = mqtt.Client(client_id="pos-todo")
 
 
 def initialize():
-    client.subscribe("pos-todo/print/#")
     client.on_connect = on_connect
     client.on_subscribe = on_subscribe
     client.on_message = on_message
+    client.subscribe("pos-todo/print/#")
 
 
 def on_connect(client, userdata, flags, rc):
