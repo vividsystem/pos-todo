@@ -21,7 +21,6 @@
         "slash_commands": [
             {
                 "command": "/pos-todo-print",
-                "url": "https://pos-todo.vividsystem.hackclub.app/slack/command/print",
                 "description": "Print to the printer!",
                 "should_escape": false
             }
@@ -51,7 +50,6 @@
     },
     "settings": {
         "event_subscriptions": {
-            "request_url": "https://pos-todo.vividsystem.hackclub.app/slack/events-endpoint",
             "bot_events": [
                 "app_mention",
                 "link_shared",
@@ -61,10 +59,10 @@
         },
         "interactivity": {
             "is_enabled": true,
-            "request_url": "https://pos-todo.vividsystem.hackclub.app/slack/interactivity-endpoint"
+            "request_url": "http://pos-todo.vividsystem.hackclub.app/slack/events"
         },
         "org_deploy_enabled": false,
-        "socket_mode_enabled": false,
+        "socket_mode_enabled": true,
         "token_rotation_enabled": false
     }
 }
