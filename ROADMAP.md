@@ -8,9 +8,10 @@
 - [ ] frontend
     - [x] add basic message field
     - [ ] move mqtt to backend
-    - [ ] settings
-        - [ ] custom header and footer
+    - [x] settings
+        - [x] custom header and footer
     - [ ] autumn theme
+    - [ ] correctly handle context creation
 - [ ] make a slackbot
 
 - [ ] deploy

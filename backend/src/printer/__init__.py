@@ -34,14 +34,15 @@ class Printer:
                     current = ""
                 lines.append(part)
 
-            # 1 if current is for space between
-            if len(current) + len(word) + (1 if current else 0) <= self.text_width:
-                current += (" " if current else "") + word
+            if not current:
+                current = word
+            elif len(current) + len(word) <= self.text_width:
+                current += " " + word
             else:
                 lines.append(current.rstrip())
                 current = word
-            if current:
-                lines.append(current.rstrip())
+        if current:
+            lines.append(current.rstrip())
 
         return "\n".join(lines)
 
