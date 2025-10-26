@@ -44,7 +44,8 @@
                 "reactions:write",
                 "users:read",
                 "im:write",
-                "app_mentions:read"
+                "app_mentions:read",
+								"users.profile:read"
             ]
         }
     },

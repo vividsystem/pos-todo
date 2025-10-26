@@ -1,8 +1,8 @@
 import type { App } from '@slack/bolt';
-import { sampleShortcutCallback } from './sample-shortcut.js';
+import { printShortcut } from './print-shortcut.js';
 
 const register = (app: App) => {
-	app.shortcut('pos_todo_print', sampleShortcutCallback);
+	app.shortcut({ callback_id: 'pos_todo_print', type: 'message_action' }, printShortcut);
 };
 
 export default { register };
