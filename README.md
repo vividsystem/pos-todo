@@ -1,17 +1,22 @@
 # pos-todo
-A simple web app to print your todos and messages directly to a POS Printer
+Print your ideas, todos, or whatever other text you like to a receipt printer!
 
+
+Unfortunately I can't give anyone acces to my printer right now, because I need to figure out some networking-security stuff beforehand.
+So watch this cool demo video to see the website working!
 [cool frontend demo video here](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8f13d6fc73214885a3d00f43c2b1ff3d57e945db_img_0923.mp4)
 
 
 ## Features
-- website and slackapp to print your messages to a receipt-printer
+Print via a:
+- (pretty fall-themed) website 
+    -> supports customized footer and header
+- slackbot to print slack messages
 
-(slackapp isn't be deployed right now as I have to implement tunneling into my home network from the nest app which I cant do right now.)
 
 ## Hardware Requirements
-- a computer/raspberry pi to run a webserver
-- ESC/POS-compatible printer
+- a computer/raspberry pi to run the webserver
+- ESC/POS-compatible printer (connected to the previously mentioned computer)
 
 ## Software Requirements
 ### Backend
@@ -44,13 +49,17 @@ bun i
 ### Slack
 1. Modify the manifest.json to have the correct request_url, names, etc.
 2. add your slack tockens and auth to `slack/.env` like so:
-```env
+```
 SLACK_CLIENT_ID=YOURSLACKCLIENTID
 SLACK_CLIENT_SECRET=YOURSLACKCLIENTSECRET
 SLACK_SIGNING_SECRET=YOURSLACKSIGNINGSECRET
 SLACK_APP_TOKEN=YOURSLACKAPPTOKEN
 SLACK_BOT_TOKEN=YOURSLACKBOTTOKEN
 MQTT_HOST=YOURMQTTHOST
+```
+```bash
+cd slack
+bun i
 ```
 
 ## Deploying
@@ -74,7 +83,9 @@ bun run start
 ```
 
 ### Slack
-See [SLACK README](./slack/README.md)
+```bash
+bun run start
+```
 
 ## Configuration (for the backend)
 This file uses a `.env` in `backend/` file for configuration
@@ -87,6 +98,11 @@ This file uses a `.env` in `backend/` file for configuration
 | `PRINTER__USB__PRODUCT_ID` | hex-string (no `0x` prefix) | Product ID of the USB printer         | Required if `PRINTER__CONNECTION=USB`     |
 | `PRINTER__NETWORK__IP`     | string                | IP address of the network printer     | Required if `PRINTER__CONNECTION=NETWORK` |
 
+
+## Usage
+- Go to the website 
+- type `/pos-todo <xour text>` 
+- or use the `Print to pos-todo` shortcut on an already sent slack mesage
 
 ## Acknowledgments
 This project is only possible thanks to [python-escpos](https://github.com/python-escpos/python-escpos)! Go leave them a star. 

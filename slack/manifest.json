@@ -20,7 +20,7 @@
         ],
         "slash_commands": [
             {
-                "command": "/pos-todo-print",
+                "command": "/pos-print",
                 "description": "Print to the printer!",
                 "should_escape": false
             }
