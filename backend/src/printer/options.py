@@ -1,0 +1,51 @@
+from dataclasses import dataclass
+from typing import Literal, Optional
+from escpos.escpos import Escpos
+
+
+@dataclass
+class TextOptions:
+    align: Literal["center", "left", "right"] = "left"
+    font: Optional[Literal["a", "b"]] = None
+    bold: bool = False
+    underlineType: Optional[int] = None  # TODO replace
+    height: Optional[int] = None  # 1-8
+    width: Optional[int] = None  # 1-8
+    density: Optional[int] = None  # 0-8
+    invertColors: Optional[bool] = None
+    smooth: Optional[bool] = None
+    flipTextDirection: Optional[bool] = None
+
+    def set(self, printer: Escpos):
+        printer.set_with_default(
+            align=self.align,
+            font=self.font,
+            bold=self.bold,
+            underline=_clip(self.underlineType, 0, 2)
+            if self.underlineType is not None
+            else None,
+            double_height=self.height == 2,
+            double_width=self.width == 2,
+            custom_size=(self.width is not None and self.width != 2)
+            or (self.width is not None and self.height != 2),
+            width=_clip(self.width, 1, 8) if self.width != 2 else None,
+            height=_clip(self.height, 1, 8) if self.height != 2 else None,
+            density=_clip(self.invertColors, 0, 8),
+            invert=self.invertColors,
+            smooth=(
+                self.smooth
+                if self.height is not None
+                and self.height >= 4
+                and self.width is not None
+                and self.width >= 4
+                else None
+            ),
+            flip=self.flipTextDirection,
+        )
+
+
+def _clip(
+    val: Optional[int], min_val: int, max_val: int, default: Optional[int] = None
+):
+    default: int = default if default is not None else min_val
+    return max(min_val, min(val, max_val)) if val is not None else default
