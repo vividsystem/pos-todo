@@ -10,12 +10,14 @@
     - [ ] move mqtt to backend
     - [x] settings
         - [x] custom header and footer
-    - [ ] autumn theme
-    - [ ] correctly handle context creation
-- [ ] make a slackbot
+    - [x] autumn theme
+- [x] make a slackbot
 
 - [ ] deploy
-- [ ] make demo video
+    - requires: moving mqtt to server in frontend
+- [x] make demo video
 
+- [ ] support for mqtt auth
+- [ ] support slack message formatting
 - [ ] add zod type validation
 - [ ] full formatted text support on backend and front-end
