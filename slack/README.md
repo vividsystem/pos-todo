@@ -33,7 +33,7 @@ Before you can run the app, you'll need to store some environment variables.
 ## Project Structure
 
 ### `manifest.json`
-
+"request_url": "http://pos-todo.vividsystem.hackclub.app/slack/events"
 `manifest.json` is a configuration for Slack apps. With a manifest, you can create an app with a pre-defined configuration, or adjust the configuration of an existing app.
 
 ### `app.ts`

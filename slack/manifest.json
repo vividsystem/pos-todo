@@ -59,7 +59,6 @@
         },
         "interactivity": {
             "is_enabled": true,
-            "request_url": "http://pos-todo.vividsystem.hackclub.app/slack/events"
         },
         "org_deploy_enabled": false,
         "socket_mode_enabled": true,
