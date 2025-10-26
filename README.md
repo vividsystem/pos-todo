@@ -46,8 +46,9 @@ after that do `sudo service udev restart` or `sudo udevadm control --reload` to 
 cd frontend
 bun i
 ```
+2. Add `VITE_MQTT_SERVER="mqtt://YOURMQTTHOST"` to `frontend/.env`
 ### Slack
-1. Modify the manifest.json to have the correct request_url, names, etc.
+1. Modify the manifest.json to have the correct name, etc.
 2. add your slack tockens and auth to `slack/.env` like so:
 ```
 SLACK_CLIENT_ID=YOURSLACKCLIENTID
@@ -55,7 +56,7 @@ SLACK_CLIENT_SECRET=YOURSLACKCLIENTSECRET
 SLACK_SIGNING_SECRET=YOURSLACKSIGNINGSECRET
 SLACK_APP_TOKEN=YOURSLACKAPPTOKEN
 SLACK_BOT_TOKEN=YOURSLACKBOTTOKEN
-MQTT_HOST=YOURMQTTHOST
+MQTT_HOST="mqtt://YOURHOST:YOURPORT"
 ```
 ```bash
 cd slack
