@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-		"start:prod": "node ./dist/app.js"
+		"start:prod": "node ./dist/app.js",
     "start": "bun run build && node ./dist/app.js",
     "lint": "bunx @biomejs/biome check *.ts listeners tests",
     "lint:fix": "bunx @biomejs/biome check --write *.ts listeners tests",
