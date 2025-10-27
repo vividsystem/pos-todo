@@ -56,8 +56,6 @@ class Printer:
         self.driver.set_with_default()
 
     def printMessage(self, header: str, content: str, footer: str) -> None:
-        self._printLine("--" * 15)
-        self._ln()
         TextOptions(bold=True, underlineType=2).set(self.driver)
         self._printLine(header)
         self._reset()
@@ -68,4 +66,4 @@ class Printer:
         TextOptions(align="center").set(self.driver)
         self._ln()
         self._printLine("--" * 15)
-        self._ln(8)
+        self._ln(2)
