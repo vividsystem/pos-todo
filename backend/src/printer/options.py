@@ -21,8 +21,8 @@ class TextOptions:
             align=self.align,
             font=self.font,
             bold=self.bold,
-            underline=_clip(self.underlinetype, 0, 2)
-            if self.underlinetype is not None
+            underline=_clip(self.underlineType, 0, 2)
+            if self.underlineType is not None
             else None,
             double_height=self.height == 2,
             double_width=self.width == 2,
@@ -48,8 +48,8 @@ class TextOptions:
             align=self.align,
             font=self.font,
             bold=self.bold,
-            underline=_clip(self.underlinetype, 0, 2)
-            if self.underlinetype is not None
+            underline=_clip(self.underlineType, 0, 2)
+            if self.underlineType is not None
             else None,
             double_height=self.height == 2,
             double_width=self.width == 2,
