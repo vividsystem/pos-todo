@@ -48,7 +48,6 @@ MARKDOWN_OPTIONS = {
 class Printer:
     def __init__(self, settings: Settings) -> None:
         self.md = MarkdownIt(options_update=MARKDOWN_OPTIONS)
-        print(self.md.get_all_rules())
         self.text_width = 36
         if settings.connection == "USB" and settings.usb:
             self.driver = Usb(
@@ -72,8 +71,24 @@ class Printer:
     ) -> None:
         tokens = self.md.parse(text_md)
         node = SyntaxTreeNode(tokens)
+        self._walk_markdown(node)
+
+    def _walk_markdown(self, node: SyntaxTreeNode):
+        match node.type:
+            case "paragraph":
+                pass
+            case "heading":
+                pass
+            case "strong":
+                pass
+            case "code":
+                pass
+            case "fence":
+                pass
+            case _:
+                print(f"unhandled markdown type {node.type}!")
         for child in node.children:
-            print(child)
+            self._walk_markdown(child)
 
     def _insertln(self, text: str):
         lines = []
