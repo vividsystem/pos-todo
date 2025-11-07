@@ -2,14 +2,14 @@ from escpos.printer import Network, Usb
 from printer.options import TextOptions
 from cfg import Settings
 from markdown_it import MarkdownIt
-from markdown_it.tree import SyntaxTreeNode
+from markdown_it.tree import Token
 from typing import Optional
 
 MARKDOWN_OPTIONS = {
     "html": False,
     "linkify": False,
     "xhtmlOut": True,
-    "breaks": False,
+    "breaks": True,
     # "tyopgrapher": True,
     # quotes: "...",
     "components": {
@@ -70,46 +70,66 @@ class Printer:
         self, text_md: str, header: Optional[str] = None, footer: Optional[str] = None
     ) -> None:
         tokens = self.md.parse(text_md)
-        node = SyntaxTreeNode(tokens)
-        self._walk_markdown(node)
+        self._walk_markdown(tokens)
 
-    def _walk_markdown(self, node: SyntaxTreeNode):
-        match node.type:
-            case "root":
-                pass
-            case "text":
-                print(f"{node.type}: {node.content}")
-            case "paragraph":
-                print(f"{node.type}: {node.content}")
-            case "bullet_list":
-                print(f"{node.type}: {node.content}")
-                pass
-            case "ordered_list":
-                print(f"{node.type}: {node.content}")
-                pass
-            case "list_item":
-                print(f"{node.type}: {node.content}")
-                pass
-            case "link":
-                print(f"{node.type}: {node.content}")
-                pass
-            case "heading":
-                print(f"{node.type}: {node.content}")
-                pass
-            case "strong":
-                print(f"{node.type}: {node.content}")
-                pass
-            case "code":
-                print(f"{node.type}: {node.content}")
-                pass
-            case "fence":
-                print(f"{node.type}: {node.content}")
-                pass
-            case _:
-                print(f"unhandled markdown type {node.type}!")
-                print(f"{node.type}: {node.content}")
-        for child in node.children:
-            self._walk_markdown(child)
+    def _hr(self):
+        self._print("-" * 36)
+
+    def _walk_markdown(self, tokens: list[Token]):
+        list_stack = []
+        for token in tokens:
+            match token.type:
+                case "paragraph_open":
+                    pass
+                case "paragraph_close":
+                    self._ln()
+                case "heading_open":
+                    TextOptions(bold=True, underlineType=2).set(self)
+                case "heading_close":
+                    TextOptions(bold=False, underlineType=0).set(self)
+                    self._ln()
+                case "strong_open":
+                    TextOptions(bold=True).set(self)
+                case "strong_close":
+                    TextOptions(bold=False).set(self)
+                case "em_open":
+                    TextOptions(underlineType=1).set(self)
+                case "em_close":
+                    TextOptions(underlineType=0).set(self)
+                case "code_inline":
+                    self._print(f"[{token.content}]")
+                case "link_open":
+                    url = token.attrGet("href")
+                    print(f"lo_url: {url}")
+                case "link_close":
+                    url = token.attrGet("href")
+                    print(f"lc_url: {url}")
+                case "fence":
+                    self._print(f"{(token.info or '') + ' '}Code")
+                    self._ln()
+                    self._print(f"{token.content}")
+                    self._ln()
+                    self._print("END OF CODE")
+                case "bullet_list_open":
+                    list_stack.append({"type": "bullet"})
+                case "ordered_list_open":
+                    order = int(token.attrs.get("order", 1)) if token.attrs else 1
+                    list_stack.append({"type": "ordered", "number": order})
+                case "bullet_list_close" | "ordered_list_close":
+                    list_stack.pop()
+                case "list_item_open":
+                    if list_stack:
+                        li = list_stack[-1]
+                        prefix = "-"
+                        if li["type"] == "ordered":
+                            prefix = f"{li['number']}."
+                            li["number"] += 1
+                        self._print(prefix + " ")
+                case "text":
+                    self._print(token.content)
+                case _:
+                    print(f"{token.type} unknown")
+        TextOptions().set_default(self)
 
     def _insertln(self, text: str):
         lines = []
@@ -144,14 +164,14 @@ class Printer:
         self.driver.set_with_default()
 
     def printMessage(self, header: str, content: str, footer: str) -> None:
-        TextOptions(bold=True, underlineType=2).set(self.driver)
+        TextOptions(bold=True, underlineType=2).set_default(self.driver)
         self._print(header)
         self._reset()
         self._ln()
         self._print(content)
         self._ln(2)
         self._print(footer)
-        TextOptions(align="center").set(self.driver)
+        TextOptions(align="center").set_default(self.driver)
         self._ln()
         self._print("--" * 15)
         self._ln(2)
