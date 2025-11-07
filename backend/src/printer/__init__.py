@@ -3,6 +3,7 @@ from printer.options import TextOptions
 from cfg import Settings
 from markdown_it import MarkdownIt
 from markdown_it.tree import SyntaxTreeNode
+from typing import Optional
 
 MARKDOWN_OPTIONS = {
     "html": False,
