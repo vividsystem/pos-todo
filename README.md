@@ -30,6 +30,25 @@ Print via a:
 (for all instances the repo has to be cloned first)
 ### Backend
 2. Setup a MQTT Server (you can use the docker compose for that)
+Just copy this config to `./config/mosquitto.conf`
+```conf
+# Allow anonymous connections (for testing)
+allow_anonymous true
+
+# Persistence and data directories
+persistence true
+persistence_location /mosquitto/data/
+
+# Logging
+log_dest file /mosquitto/log/mosquitto.log
+
+# Default MQTT listener
+listener 1883
+
+# WebSocket listener (optional)
+listener 9001
+protocol websockets
+```
 3. Setup your POS-Printer
 If you have a USB-Printer make a udev rule for it.
 For that find out your product id and vendor id using for example `lsusb`
@@ -46,8 +65,9 @@ after that do `sudo service udev restart` or `sudo udevadm control --reload` to 
 cd frontend
 bun i
 ```
+2. Add `VITE_MQTT_SERVER="mqtt://YOURMQTTHOST"` to `frontend/.env`
 ### Slack
-1. Modify the manifest.json to have the correct request_url, names, etc.
+1. Modify the manifest.json to have the correct name, etc.
 2. add your slack tockens and auth to `slack/.env` like so:
 ```
 SLACK_CLIENT_ID=YOURSLACKCLIENTID
@@ -55,7 +75,7 @@ SLACK_CLIENT_SECRET=YOURSLACKCLIENTSECRET
 SLACK_SIGNING_SECRET=YOURSLACKSIGNINGSECRET
 SLACK_APP_TOKEN=YOURSLACKAPPTOKEN
 SLACK_BOT_TOKEN=YOURSLACKBOTTOKEN
-MQTT_HOST=YOURMQTTHOST
+MQTT_HOST="mqtt://YOURHOST:YOURPORT"
 ```
 ```bash
 cd slack

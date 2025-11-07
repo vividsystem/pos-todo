@@ -4,7 +4,6 @@ import { printMessage } from '../../mqtt/mqtt.js';
 const printingCallback: Middleware<SlackCommandMiddlewareArgs> = async ({ ack, respond, logger, payload, client }) => {
 	try {
 		await ack();
-		console.log("user:", payload.user_name, payload.user_id)
 		const res = await client.users.profile.get({ user: payload.user_id })
 		if (!res.ok || !res.profile) {
 			await respond('An error occured trying to fetch your profile information!')

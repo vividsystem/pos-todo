@@ -6,10 +6,11 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node ./dist/app.js",
-    "lint": "npx @biomejs/biome check *.ts listeners tests",
-    "lint:fix": "npx @biomejs/biome check --write *.ts listeners tests",
-    "test": "npm run build && npm run lint && node --import tsx --test"
+		"start:prod": "node ./dist/app.js",
+    "start": "bun run build && node ./dist/app.js",
+    "lint": "bunx @biomejs/biome check *.ts listeners tests",
+    "lint:fix": "bunx @biomejs/biome check --write *.ts listeners tests",
+    "test": "bun run build && bun run lint && node --import tsx --test"
   },
   "author": "vividsystem",
   "license": "MIT",
