@@ -48,7 +48,7 @@ MARKDOWN_OPTIONS = {
 class Printer:
     def __init__(self, settings: Settings) -> None:
         self.md = MarkdownIt(options_update=MARKDOWN_OPTIONS)
-        self.text_width = 36
+        self.text_width = 42
         if settings.connection == "USB" and settings.usb:
             self.driver = Usb(
                 int(settings.usb.vendor_id, 16),
@@ -59,6 +59,7 @@ class Printer:
             self.driver = Network(settings.network.host, profile=settings.profile)
 
         self.driver.open(raise_not_found=True)
+        self._n = 0
 
     def _print(self, text: str, improved_linebreaks: bool = True) -> None:
         if improved_linebreaks:
@@ -73,7 +74,57 @@ class Printer:
         self._walk_markdown(tokens)
 
     def _hr(self):
-        self._print("-" * 36)
+        self._print("-" * self.text_width)
+
+    def _printInline(self, text: str):
+        lines = self.wrap_text(text)
+        for line in lines:
+            self.driver.text(line + "\n")
+
+    def _handleInline(self, token: Token):
+        if not token.children:
+            return
+
+        current_text = ""
+        for child in token.children:
+            match child.type:
+                case "text":
+                    current_text += child.content
+                case "strong_open":
+                    if current_text:
+                        self._printInline(current_text)
+                        current_text = ""
+                    TextOptions(bold=True).set(self.driver)
+                case "strong_close":
+                    TextOptions(bold=False).set(self.driver)
+                case "em_open":
+                    if current_text:
+                        self._printInline(current_text)
+                        current_text = ""
+                    TextOptions(underlineType=1).set(self.driver)
+                case "em_close":
+                    TextOptions(underlineType=0).set(self.driver)
+                case "code_inline":
+                    if current_text:
+                        self._printInline(current_text)
+                        current_text = ""
+                    current_text += f"[{child.content}]"
+                case "link_open":
+                    pass
+                case "link_close":
+                    url = child.attrGet("href")
+                    if url:
+                        current_text += f" ({url})"
+                case "softbreak" | "hardbreak":
+                    if current_text:
+                        self._printInline(current_text)
+                        current_text = ""
+
+        if current_text:
+            self._printInline(current_text)
+
+        def _handleBlockQuote(self, token: Token):
+            pass
 
     def _walk_markdown(self, tokens: list[Token]):
         list_stack = []
@@ -87,33 +138,15 @@ class Printer:
                 case "hr":
                     self._hr()
                 case "inline":
-                    self._print(token.content)
+                    self._handleInline(token)
                 case "heading_open":
                     TextOptions(bold=True, underlineType=2).set(self.driver)
                 case "heading_close":
                     TextOptions(bold=False, underlineType=0).set(self.driver)
                     self._ln()
-                case "strong_open":
-                    TextOptions(bold=True).set(self.driver)
-                case "strong_close":
-                    TextOptions(bold=False).set(self.driver)
-                case "em_open":
-                    TextOptions(underlineType=1).set(self.driver)
-                case "em_close":
-                    TextOptions(underlineType=0).set(self.driver)
-                case "code_inline":
-                    self._print(f"[{token.content}]")
-                case "link_open":
-                    url = token.attrGet("href")
-                    print(f"lo_url: {url}")
-                case "link_close":
-                    url = token.attrGet("href")
-                    print(f"lc_url: {url}")
                 case "fence":
                     self._print(f"{(token.info or '') + ' '}Code")
-                    self._ln()
                     self._print(f"{token.content}")
-                    self._ln()
                     self._print("END OF CODE")
                 case "bullet_list_open":
                     list_stack.append({"type": "bullet"})
@@ -130,13 +163,15 @@ class Printer:
                             prefix = f"{li['number']}."
                             li["number"] += 1
                         self._print(prefix + " ")
-                case "text":
-                    self._print(token.content)
                 case _:
                     print(f"{token.type} unknown")
-        TextOptions().set_default(self.driver)
+            TextOptions().set_default(self.driver)
 
     def _insertln(self, text: str):
+        lines = self._wrap_text(text)
+        return "\n".join(lines)
+
+    def wrap_text(self, text: str):
         lines = []
         current = ""
         for word in text.split():
@@ -160,7 +195,7 @@ class Printer:
         if current:
             lines.append(current.rstrip())
 
-        return "\n".join(lines)
+        return lines
 
     def _ln(self, n: int = 1) -> None:
         self.driver.ln(n)
