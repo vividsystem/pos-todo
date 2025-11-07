@@ -30,6 +30,25 @@ Print via a:
 (for all instances the repo has to be cloned first)
 ### Backend
 2. Setup a MQTT Server (you can use the docker compose for that)
+Just copy this config to `./config/mosquitto.conf`
+```conf
+# Allow anonymous connections (for testing)
+allow_anonymous true
+
+# Persistence and data directories
+persistence true
+persistence_location /mosquitto/data/
+
+# Logging
+log_dest file /mosquitto/log/mosquitto.log
+
+# Default MQTT listener
+listener 1883
+
+# WebSocket listener (optional)
+listener 9001
+protocol websockets
+```
 3. Setup your POS-Printer
 If you have a USB-Printer make a udev rule for it.
 For that find out your product id and vendor id using for example `lsusb`
