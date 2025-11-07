@@ -75,18 +75,39 @@ class Printer:
 
     def _walk_markdown(self, node: SyntaxTreeNode):
         match node.type:
+            case "root":
+                pass
+            case "text":
+                print(f"{node.type}: {node.content}")
             case "paragraph":
+                print(f"{node.type}: {node.content}")
+            case "bullet_list":
+                print(f"{node.type}: {node.content}")
+                pass
+            case "ordered_list":
+                print(f"{node.type}: {node.content}")
+                pass
+            case "list_item":
+                print(f"{node.type}: {node.content}")
+                pass
+            case "link":
+                print(f"{node.type}: {node.content}")
                 pass
             case "heading":
+                print(f"{node.type}: {node.content}")
                 pass
             case "strong":
+                print(f"{node.type}: {node.content}")
                 pass
             case "code":
+                print(f"{node.type}: {node.content}")
                 pass
             case "fence":
+                print(f"{node.type}: {node.content}")
                 pass
             case _:
                 print(f"unhandled markdown type {node.type}!")
+                print(f"{node.type}: {node.content}")
         for child in node.children:
             self._walk_markdown(child)
 
