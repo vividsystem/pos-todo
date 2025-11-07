@@ -7,7 +7,7 @@
 
 - [ ] frontend
     - [x] add basic message field
-    - [ ] move mqtt to backend
+    - [x] move mqtt to back-frontend
     - [x] settings
         - [x] custom header and footer
     - [x] autumn theme
@@ -18,6 +18,8 @@
 - [x] make demo video
 
 - [ ] support for mqtt auth
+- [ ] rate limiting and message limits
 - [ ] support slack message formatting
+    - [ ] commonmark support? -> markdown-it-py
 - [ ] add zod type validation
 - [ ] full formatted text support on backend and front-end
