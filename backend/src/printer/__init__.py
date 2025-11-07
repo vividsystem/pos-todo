@@ -78,6 +78,7 @@ class Printer:
     def _walk_markdown(self, tokens: list[Token]):
         list_stack = []
         for token in tokens:
+            print(f"{token.type}: {token.content}")
             match token.type:
                 case "paragraph_open":
                     pass
@@ -129,7 +130,7 @@ class Printer:
                     self._print(token.content)
                 case _:
                     print(f"{token.type} unknown")
-        TextOptions().set_default(self)
+        TextOptions().set_default(self.driver)
 
     def _insertln(self, text: str):
         lines = []
