@@ -30,8 +30,8 @@ class TextOptions:
             or (self.width is not None and self.height != 2),
             width=_clip(self.width, 1, 8) if self.width != 2 else None,
             height=_clip(self.height, 1, 8) if self.height != 2 else None,
-            density=_clip(self.invertcolors, 0, 8),
-            invert=self.invertcolors,
+            density=_clip(self.density, 0, 8),
+            invert=self.invertColors,
             smooth=(
                 self.smooth
                 if self.height is not None
@@ -40,7 +40,7 @@ class TextOptions:
                 and self.width >= 4
                 else None
             ),
-            flip=self.fliptextdirection,
+            flip=self.flipTextDirection,
         )
 
     def set(self, printer: Escpos):
@@ -57,8 +57,8 @@ class TextOptions:
             or (self.width is not None and self.height != 2),
             width=_clip(self.width, 1, 8) if self.width != 2 else None,
             height=_clip(self.height, 1, 8) if self.height != 2 else None,
-            density=_clip(self.invertcolors, 0, 8),
-            invert=self.invertcolors,
+            density=_clip(self.density, 0, 8),
+            invert=self.invertColors,
             smooth=(
                 self.smooth
                 if self.height is not None
@@ -67,7 +67,7 @@ class TextOptions:
                 and self.width >= 4
                 else None
             ),
-            flip=self.fliptextdirection,
+            flip=self.flipTextDirection,
         )
 
 
