@@ -77,7 +77,7 @@ class Printer:
         self._print("-" * self.text_width)
 
     def _printInline(self, text: str):
-        lines = self.wrap_text(text)
+        lines = self._wrap_text(text)
         for line in lines:
             self.driver.text(line + "\n")
 
@@ -171,7 +171,7 @@ class Printer:
         lines = self._wrap_text(text)
         return "\n".join(lines)
 
-    def wrap_text(self, text: str):
+    def _wrap_text(self, text: str):
         lines = []
         current = ""
         for word in text.split():
