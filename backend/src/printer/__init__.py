@@ -84,6 +84,10 @@ class Printer:
                     pass
                 case "paragraph_close":
                     self._ln()
+                case "hr":
+                    self._hr()
+                case "inline":
+                    self._print(token.content)
                 case "heading_open":
                     TextOptions(bold=True, underlineType=2).set(self.driver)
                 case "heading_close":
