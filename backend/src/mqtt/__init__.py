@@ -49,37 +49,84 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
         )
 
     dt = datetime.datetime.now()
-    header = f"{dt.isoformat(timespec='seconds')} - TODOs"
-    header = """
+    header = f"{dt.isoformat(timespec='seconds')}:"
+    #     header = """
+    #
+    #                    .-'\\
+    #                    \\:. \\
+    #                    |:.  \\
+    #                    /::'  \\
+    #                 __/:::.   \\
+    #         _.-'-.'`  `'.-'`'._\\-"`"-'-,
+    #      .`;    :      :     :      :   : `.
+    #     / :     :      :                 :  \\
+    #    /        :/\\          :   /\\ :   :  \\
+    #   ;   :     /\\ \\   :     :  /\\ \\    :  ;
+    #  .    :    /  \\ \\          /  \\ \\       .
+    #  ;        /_)__\\ \\ :     :/_)__\\ \\  :   ;
+    # ;         `-----`' : ,   :`-----`'          ;
+    # |    :      :       / \\         :     :    |
+    # |                  / \\ \\ :            :   |
+    # |    :      :     /___\\ \\:      :         |
+    # |    :      :     `----`'       :           |
+    # ;        |;-.,__   :     :   __.-'|   :     ;
+    #  ;    :  ||   \\ \\``/'---'\\`\\` /  ||     ;
+    #   .    :  \\   \\_\\/       \\_\\/   // '  .
+    #            \\'._    /\\     /\\ _.-'/   :  ;
+    #     \\   :   `._`'-/ /\\._./ /\\  .'  :  /
+    #      `\\  :     `-.\\/__\\__\\/_.;'   : /`
+    #        `\\  '   :   :        :   :  /`
+    #          `-`.__`        :   :__.'-`
+    #                `-..`.__.'..-
+    #
+    # pumpkin says:"""
+    if "header" in payload and isinstance(payload["header"], str):
+        header = payload["header"]
 
-                   .-'\\
-                   \\:. \\
-                   |:.  \\
-                   /::'  \\
-                __/:::.   \\
-        _.-'-.'`  `'.-'`'._\\-"`"-'-,
-     .`;    :      :     :      :   : `.
-    / :     :      :                 :  \\
-   /        :/\\          :   /\\ :   :  \\
-  ;   :     /\\ \\   :     :  /\\ \\    :  ;
- .    :    /  \\ \\          /  \\ \\       .
- ;        /_)__\\ \\ :     :/_)__\\ \\  :   ;
-;         `-----`' : ,   :`-----`'          ;
-|    :      :       / \\         :     :    |
-|                  / \\ \\ :            :   |
-|    :      :     /___\\ \\:      :         |
-|    :      :     `----`'       :           |
-;        |;-.,__   :     :   __.-'|   :     ;
- ;    :  ||   \\ \\``/'---'\\`\\` /  ||     ;
-  .    :  \\   \\_\\/       \\_\\/   // '  .
-           \\'._    /\\     /\\ _.-'/   :  ;
-    \\   :   `._`'-/ /\\._./ /\\  .'  :  /
-     `\\  :     `-.\\/__\\__\\/_.;'   : /`
-       `\\  '   :   :        :   :  /`
-         `-`.__`        :   :__.'-`
-               `-..`.__.'..-
+    footer = "sent with pos-todo"
+    if "footer" in payload and isinstance(payload["footer"], str):
+        footer = payload["footer"]
 
-pumpkin says:"""
+    userdata.printMessage(header, payload["message"], footer)
+    client.publish(
+        "pos-todo/status",
+        json.dumps(
+            {
+                "status": "success",
+                "message": "message sent successfully",
+                "content": {
+                    "header": header,
+                    "message": payload["message"],
+                    "footer": footer,
+                },
+            }
+        ),
+    )
+
+
+@client.topic_callback("pos-todo/print/markdown")
+def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTMessage):
+    try:
+        payload = json.loads(message.payload)
+    except Exception:
+        client.publish(
+            "pos-todo/status",
+            json.dumps({"status": "error", "message": "payload couldn't be parsed"}),
+        )
+
+    if "message" not in payload or not isinstance(payload["message"], str):
+        client.publish(
+            "pos-todo/status",
+            json.dumps(
+                {
+                    "status": "error",
+                    "message": "you have to specify a message in your payload",
+                }
+            ),
+        )
+
+    dt = datetime.datetime.now()
+    header = f"{dt.isoformat(timespec='seconds')}:"
     if "header" in payload and isinstance(payload["header"], str):
         header = payload["header"]
 
@@ -88,7 +135,7 @@ pumpkin says:"""
         footer = payload["footer"]
 
     print(f"print message: {payload['message']}")
-    userdata.printMessage(header, payload["message"], footer)
+    userdata.printMarkdown(payload["message"], header, footer)
     client.publish(
         "pos-todo/status",
         json.dumps(
