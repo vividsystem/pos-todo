@@ -1,10 +1,53 @@
 from escpos.printer import Network, Usb
 from printer.options import TextOptions
 from cfg import Settings
+from markdown_it import MarkdownIt
+from markdown_it.tree import SyntaxTreeNode
+
+MARKDOWN_OPTIONS = {
+    "html": False,
+    "linkify": False,
+    "xhtmlOut": True,
+    "breaks": False,
+    # "tyopgrapher": True,
+    # quotes: "...",
+    "components": {
+        "core": {
+            "normalize",
+            "block",
+            "inline",
+            # "linkify",
+            # "smartquotes"
+            "text_join",
+        },
+        "block": {
+            "rules": [
+                "blockquote",
+                "hr",
+                "list",
+                # "fence" -> ```code```
+                # code -> ``
+                "paragraph",
+            ]
+        },
+        "inline": {
+            "text",
+            # "linkify",
+            "escape",
+            "backticks",
+            # "strikethrough",
+            # "emphasis" -> italics
+            "link",
+        },
+        "inline2": ["balance_pairs", "fragments_join"],
+    },
+}
 
 
 class Printer:
     def __init__(self, settings: Settings) -> None:
+        self.md = MarkdownIt(options_update=MARKDOWN_OPTIONS)
+        print(self.md.get_all_rules())
         self.text_width = 36
         if settings.connection == "USB" and settings.usb:
             self.driver = Usb(
@@ -17,8 +60,19 @@ class Printer:
 
         self.driver.open(raise_not_found=True)
 
-    def _printLine(self, line: str) -> None:
-        self.driver.textln(self._insertln(line))
+    def _print(self, text: str, improved_linebreaks: bool = True) -> None:
+        if improved_linebreaks:
+            self.driver.textln(self._insertln(text))
+        else:
+            self.driver.textln(text)
+
+    def printMarkdown(
+        self, text_md: str, header: Optional[str] = None, footer: Optional[str] = None
+    ) -> None:
+        tokens = self.md.parse(text_md)
+        node = SyntaxTreeNode(tokens)
+        for child in node.children:
+            print(child)
 
     def _insertln(self, text: str):
         lines = []
@@ -49,21 +103,18 @@ class Printer:
     def _ln(self, n: int = 1) -> None:
         self.driver.ln(n)
 
-    def _printBlock(self, block: str, col: int) -> None:
-        self.driver.textblock(block, col)
-
     def _reset(self) -> None:
         self.driver.set_with_default()
 
     def printMessage(self, header: str, content: str, footer: str) -> None:
         TextOptions(bold=True, underlineType=2).set(self.driver)
-        self._printLine(header)
+        self._print(header)
         self._reset()
         self._ln()
-        self._printLine(content)
+        self._print(content)
         self._ln(2)
-        self._printLine(footer)
+        self._print(footer)
         TextOptions(align="center").set(self.driver)
         self._ln()
-        self._printLine("--" * 15)
+        self._print("--" * 15)
         self._ln(2)
