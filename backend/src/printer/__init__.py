@@ -84,18 +84,18 @@ class Printer:
                 case "paragraph_close":
                     self._ln()
                 case "heading_open":
-                    TextOptions(bold=True, underlineType=2).set(self)
+                    TextOptions(bold=True, underlineType=2).set(self.driver)
                 case "heading_close":
-                    TextOptions(bold=False, underlineType=0).set(self)
+                    TextOptions(bold=False, underlineType=0).set(self.driver)
                     self._ln()
                 case "strong_open":
-                    TextOptions(bold=True).set(self)
+                    TextOptions(bold=True).set(self.driver)
                 case "strong_close":
-                    TextOptions(bold=False).set(self)
+                    TextOptions(bold=False).set(self.driver)
                 case "em_open":
-                    TextOptions(underlineType=1).set(self)
+                    TextOptions(underlineType=1).set(self.driver)
                 case "em_close":
-                    TextOptions(underlineType=0).set(self)
+                    TextOptions(underlineType=0).set(self.driver)
                 case "code_inline":
                     self._print(f"[{token.content}]")
                 case "link_open":
