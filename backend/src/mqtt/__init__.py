@@ -113,6 +113,7 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
             "pos-todo/status",
             json.dumps({"status": "error", "message": "payload couldn't be parsed"}),
         )
+        return
 
     if "message" not in payload or not isinstance(payload["message"], str):
         client.publish(
