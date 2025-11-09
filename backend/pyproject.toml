@@ -13,12 +13,15 @@ dependencies = [
     "python-escpos[all]>=3.1",
 ]
 
+
+[depency-groups]
+dev = [
+    "pytest",
+    "pytest-cov",
+]
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 addopts = "-ra"
 
 [tool.uv]
-dev-dependencies = [
-    "pytest",
-    "pytest-cov",
-]
