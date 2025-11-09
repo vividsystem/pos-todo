@@ -90,46 +90,32 @@ class Printer:
         if not token.children:
             return
 
-        current_text = prefix
         offset = 0
         url = ""
         for child in token.children:
             match child.type:
                 case "text":
-                    current_text += child.content
+                    offset = self._printInline(prefix + child.content, offset)
+                    prefix = ""
                 case "strong_open":
-                    if current_text:
-                        offset = self._printInline(current_text, offset)
-                        current_text = ""
                     TextOptions(bold=True).set(self.driver)
                 case "strong_close":
                     TextOptions(bold=False).set(self.driver)
                 case "em_open":
-                    if current_text:
-                        offset = self._printInline(current_text, offset)
-                        current_text = ""
                     TextOptions(underlineType=1).set(self.driver)
                 case "em_close":
                     TextOptions(underlineType=0).set(self.driver)
                 case "code_inline":
-                    if current_text:
-                        offset = self._printInline(current_text, offset)
-                        current_text = ""
-                    current_text += f"[{child.content}]"
+                    offset = self._printInline(prefix + f"[{child.content}]", offset)
 
                 case "link_open":
                     url = child.attrGet("href")
                     pass
                 case "link_close":
                     if url:
-                        current_text += f" ({url}) "
+                        offset = self._printInline(prefix + f"({url}) ", offset)
                 case "softbreak" | "hardbreak":
-                    if current_text:
-                        offset = self._printInline(current_text, offset)
-                        current_text = ""
-
-        if current_text:
-            offset = self._printInline(current_text, offset)
+                    self._ln()
 
         self._reset()
         self._ln()
