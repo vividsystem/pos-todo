@@ -82,7 +82,7 @@ class Printer:
         self.driver.text(text)
 
     def printQR(self, url: str):
-        self.driver.qr(url, center=True)
+        self.driver.qr(url)
 
     def _handleInline(self, token: Token, prefix: str = ""):
         if not token.children:
@@ -130,6 +130,8 @@ class Printer:
                         text += tx
                         url = ""
                     elif url and qr:
+                        tx, offset = self._insertln(f"(see qr code or {url})", offset)
+                        text += tx
                         self.printQR(url)
                         url = ""
                         qr = False
