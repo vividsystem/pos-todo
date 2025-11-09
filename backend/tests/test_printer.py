@@ -58,4 +58,4 @@ def test_walk_markdown(printer, text, expected):
     printer.driver.text.side_effect = lambda text: calls.append(text)
     printer.printMarkdown(text)
 
-    assert " ".join(calls) == expected
+    assert "".join(calls) == expected

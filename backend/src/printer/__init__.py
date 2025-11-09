@@ -97,6 +97,7 @@ class Printer:
                     current_text += child.content
                 case "strong_open":
                     if current_text:
+                        current_text += " "
                         offset = self._printInline(current_text, offset)
                         current_text = ""
                     TextOptions(bold=True).set(self.driver)
@@ -104,6 +105,7 @@ class Printer:
                     TextOptions(bold=False).set(self.driver)
                 case "em_open":
                     if current_text:
+                        current_text += " "
                         offset = self._printInline(current_text, offset)
                         current_text = ""
                     TextOptions(underlineType=1).set(self.driver)
@@ -111,9 +113,10 @@ class Printer:
                     TextOptions(underlineType=0).set(self.driver)
                 case "code_inline":
                     if current_text:
+                        current_text += " "
                         offset = self._printInline(current_text, offset)
                         current_text = ""
-                    current_text += f"[{child.content}]"
+                    current_text += f"[{child.content}] "
                 case "link_open":
                     pass
                 case "link_close":
