@@ -81,11 +81,15 @@ class Printer:
     def _printInline(self, text: str):
         self.driver.text(text)
 
+    def printQR(self, url: str):
+        self.driver.qr(url, center=True)
+
     def _handleInline(self, token: Token, prefix: str = ""):
         if not token.children:
             return
 
         url = ""
+        qr = True
 
         text = prefix
         format_queue = [{"position": len(text), "to": TextOptions()}]
@@ -117,11 +121,18 @@ class Printer:
 
                 case "link_open":
                     url = child.attrGet("href")
-                    pass
+                    if url.startswith("qr:"):
+                        qr = True
+                        url = url[3:]
                 case "link_close":
-                    if url:
+                    if url and not qr:
                         tx, offset = self._insertln(f"({url})", offset)
                         text += tx
+                        url = ""
+                    elif url and qr:
+                        self.printQR(url)
+                        url = ""
+                        qr = False
                 case "softbreak":
                     pass
                 case "hardbreak":
