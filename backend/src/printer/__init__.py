@@ -116,6 +116,7 @@ class Printer:
                         offset = self._printInline(current_text, offset)
                         current_text = ""
                     current_text += f"[{child.content}]"
+
                 case "link_open":
                     url = child.attrGet("href")
                     pass
@@ -130,8 +131,11 @@ class Printer:
         if current_text:
             offset = self._printInline(current_text, offset)
 
-        def _handleBlockQuote(self, token: Token):
-            pass
+        self._reset()
+        self._ln()
+
+    def _handleBlockQuote(self, token: Token):
+        pass
 
     def _walk_markdown(self, tokens: list[Token]):
         list_stack = []
@@ -174,7 +178,7 @@ class Printer:
                     pass
                 case _:
                     print(f"{token.type} unknown")
-            TextOptions().set_default(self.driver)
+            self._reset()
 
     def _insertln(self, text: str):
         lines = self._wrap_text(text)
@@ -188,8 +192,6 @@ class Printer:
                 part = word[: self.text_width - 1] + "-"
                 word = word[self.text_width - 1 :]
                 if current:
-                    # removes only trailing whitespaces
-                    # -> dont break intentional indentation
                     lines.append(current)
                     current = ""
                 lines.append(part)
