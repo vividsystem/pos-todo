@@ -64,7 +64,7 @@ class Printer:
 
     def _print(self, text: str, improved_linebreaks: bool = True) -> None:
         if improved_linebreaks:
-            text = self._insertln(text)
+            text, _ = self._insertln(text)
             self.driver.textln(text)
         else:
             self.driver.textln(text)
