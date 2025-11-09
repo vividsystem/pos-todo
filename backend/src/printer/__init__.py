@@ -64,7 +64,7 @@ class Printer:
 
     def _print(self, text: str, improved_linebreaks: bool = True) -> None:
         if improved_linebreaks:
-            text, offset = self._insertln(text)
+            text = self._insertln(text)
             self.driver.textln(text)
         else:
             self.driver.textln(text)
@@ -78,45 +78,65 @@ class Printer:
     def _hr(self):
         self._print("-" * self.text_width)
 
-    def _printInline(self, text: str, offset: int):
-        text = "X" * (offset - 1) + " " + text
-        text, new_offset = self._insertln(text)
-        if offset != 0:
-            text = text[offset - 1 :]
+    def _printInline(self, text: str):
         self.driver.text(text)
-        return new_offset
 
     def _handleInline(self, token: Token, prefix: str = ""):
         if not token.children:
             return
 
-        offset = 0
         url = ""
+
+        text = prefix
+        format_queue = [{"position": len(text), "to": TextOptions()}]
+        offset = 0
         for child in token.children:
             match child.type:
                 case "text":
-                    offset = self._printInline(prefix + child.content, offset)
-                    prefix = ""
+                    tx, offset = self._insertln(child.content, offset)
+                    text += tx
                 case "strong_open":
-                    TextOptions(bold=True).set(self.driver)
+                    format_queue.append(
+                        {"position": len(text) - 1, "to": TextOptions(bold=True)}
+                    )
                 case "strong_close":
-                    TextOptions(bold=False).set(self.driver)
+                    format_queue.append(
+                        {"position": len(text) - 1, "to": TextOptions(bold=False)}
+                    )
                 case "em_open":
-                    TextOptions(underlineType=1).set(self.driver)
+                    format_queue.append(
+                        {"position": len(text) - 1, "to": TextOptions(underlineType=1)}
+                    )
                 case "em_close":
-                    TextOptions(underlineType=0).set(self.driver)
+                    format_queue.append(
+                        {"position": len(text) - 1, "to": TextOptions(underlineType=0)}
+                    )
                 case "code_inline":
-                    offset = self._printInline(prefix + f"[{child.content}]", offset)
+                    tx, offset = self._insertln(f"[{child.content}]", offset)
+                    text += tx
 
                 case "link_open":
                     url = child.attrGet("href")
                     pass
                 case "link_close":
                     if url:
-                        offset = self._printInline(prefix + f"({url}) ", offset)
-                case "softbreak" | "hardbreak":
+                        tx, offset = self._insertln(f"({url})", offset)
+                        text += tx
+                case "softbreak":
+                    pass
+                case "hardbreak":
                     self._ln()
 
+        for i in range(len(format_queue)):
+            pos = format_queue[i]["position"]
+            to: TextOptions = format_queue[i]["to"]
+            to.set(self.driver)
+            if i == len(format_queue) - 1:
+                # print everything until the end
+                self._printInline(text[pos:].rstrip())
+            else:
+                next_pos = format_queue[i + 1]["position"]
+                self._printInline(text[pos:next_pos])
         self._reset()
         self._ln()
 
@@ -166,17 +186,25 @@ class Printer:
                     print(f"{token.type} unknown")
             self._reset()
 
-    def _insertln(self, text: str):
+    def _insertln(self, text: str, offset: int = 0) -> (str, int):
         lines = self._wrap_text(text)
-        return "\n".join(lines), len(lines[-1])
+        return "\n".join(lines), len((lines[-1] if len(lines) != 0 else ""))
 
-    def _wrap_text(self, text: str):
+    def _wrap_text(self, text: str, offset: int = 0) -> list[str]:
         lines = []
         current = ""
+        trailing = text.endswith(" ")
+        starting = text.startswith(" ")
+        old_offset = offset
         for word in text.split():
-            while len(word) > self.text_width:
-                part = word[: self.text_width - 1] + "-"
-                word = word[self.text_width - 1 :]
+            if starting:
+                word = " " + word
+                starting = False
+
+            while len(word) > self.text_width - offset:
+                part = word[: self.text_width - offset - 1] + "-"
+                word = word[self.text_width - offset - 1 :]
+                offset = 0
                 if current:
                     lines.append(current)
                     current = ""
@@ -191,6 +219,19 @@ class Printer:
                 current = word
         if current:
             lines.append(current)
+
+        # TODO: fix cursed indents
+        if lines and trailing:
+            if old_offset > 0 and len(lines) == 1:
+                if len(lines[0]) + old_offset < self.text_width:
+                    lines[0] += " "
+                else:
+                    lines.append("")
+            else:
+                if len(lines[-1]) < self.text_width:
+                    lines[-1] += " "
+                else:
+                    lines.append("")
 
         return lines
 
@@ -209,6 +250,9 @@ class Printer:
         self._ln(2)
         self._print(footer)
         TextOptions(align="center").set_default(self.driver)
+        self._ln()
+        self._print("--" * 15)
+        self._ln(2)
         self._ln()
         self._print("--" * 15)
         self._ln(2)

@@ -34,17 +34,6 @@ def test_wrap_text(printer, text, expected):
     assert result == expected
 
 
-@pytest.mark.parametrize(
-    "text,expected",
-    [
-        ("hello world", 10 + len("hello world")),
-        ("=" * 43, 2),
-    ],
-)
-def test_print_inline(printer, text, expected):
-    result = printer._printInline(text, 10)
-    assert result == expected
-
 
 @pytest.mark.parametrize(
     "text,expected",
