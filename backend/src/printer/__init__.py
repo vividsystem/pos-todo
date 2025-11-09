@@ -133,10 +133,10 @@ class Printer:
             to.set(self.driver)
             if i == len(format_queue) - 1:
                 # print everything until the end
-                self._printInline(text[pos:].rstrip())
+                self._printInline(text[pos + 1 :].rstrip())
             else:
                 next_pos = format_queue[i + 1]["position"]
-                self._printInline(text[pos:next_pos])
+                self._printInline(text[pos + 1 : next_pos - 1])
         self._reset()
         self._ln()
 
