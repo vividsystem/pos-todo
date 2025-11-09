@@ -9,7 +9,8 @@ const printingCallback: Middleware<SlackCommandMiddlewareArgs> = async ({ ack, r
 			await respond('An error occured trying to fetch your profile information!')
 			return
 		}
-		const name = res.profile.display_name_normalized ?? "UN: " + payload.user_name;
+		console.log(JSON.stringify(res.profile))
+		const name = res.profile.display_name ?? "UN: " + payload.user_name;
 		await printMessage(payload.text, { name, id: payload.user_id })
 		await respond('Your message is being printed now!');
 	} catch (error) {
