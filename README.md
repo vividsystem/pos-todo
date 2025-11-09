@@ -12,6 +12,8 @@ Print via a:
 - (pretty fall-themed) website 
     -> supports customized footer and header
 - slackbot to print slack messages
+- Markdown support
+- QR support in markdown via `[link](qr:url)`
 
 
 ## Hardware Requirements

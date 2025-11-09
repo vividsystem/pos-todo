@@ -23,10 +23,13 @@ const printShortcut: Middleware<MessageShortcutArgs> = async ({
 		if (!res.ok || !res.profile) {
 			return await respond('An error occured trying to fetch your profile information!')
 		}
+
+
 		const name =
-			res.profile.display_name_normalized
-			?? (shortcut.user.username ? "UN: " + shortcut.user.username : undefined)
-			?? "USERNAME NOT DEFINED";
+			res.profile.display_name || res.profile.real_name_normalized
+			|| (res.profile.first_name ?? "") + (res.profile.last_name ?? "")
+			|| (shortcut.user.username ? "UN: " + shortcut.user.username : undefined)
+			|| "USERNAME NOT DEFINED";
 		await printMessage(shortcut.message.text, { name, id: payload.user.id })
 		await respond('Your message is being printed now!');
 	} catch (error) {
