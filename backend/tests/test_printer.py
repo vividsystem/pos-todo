@@ -51,8 +51,8 @@ def test_print_inline(printer, text, expected):
     [
         ("hello **world**", "hello world"),
         (
-            "this is an **inline** that i hope is `nice` and _smooth_",
-            "this is an inline that i hope is [nice] and\nsmooth",
+            "this is an **inline** that i hope is `nice` and _smooth_.\nlinks like [google](google.com) should also work!\nbut wait there are more things!",
+            "this is an inline that i hope is [nice] and\nsmooth. links like google (google.com)\nshould also work! but wait there are more\nthings!",
         ),
         ("`hello` *world*. **this** is important", "[hello] world. this is important"),
     ],

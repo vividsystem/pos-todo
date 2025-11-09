@@ -81,9 +81,8 @@ class Printer:
     def _printInline(self, text: str, offset: int):
         text = "X" * (offset - 1) + " " + text
         text, new_offset = self._insertln(text)
-        print(text)
         if offset != 0:
-            text = text[offset-1:]
+            text = text[offset - 1 :]
         self.driver.text(text)
         return new_offset
 
@@ -93,11 +92,11 @@ class Printer:
 
         current_text = prefix
         offset = 0
+        url = ""
         for child in token.children:
             match child.type:
                 case "text":
                     current_text += child.content
-                    self._insertln(current_text)
                 case "strong_open":
                     if current_text:
                         offset = self._printInline(current_text, offset)
@@ -118,9 +117,9 @@ class Printer:
                         current_text = ""
                     current_text += f"[{child.content}]"
                 case "link_open":
+                    url = child.attrGet("href")
                     pass
                 case "link_close":
-                    url = child.attrGet("href")
                     if url:
                         current_text += f" ({url}) "
                 case "softbreak" | "hardbreak":
