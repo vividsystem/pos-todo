@@ -50,6 +50,10 @@ def test_print_inline(printer, text, expected):
     "text,expected",
     [
         ("hello **world**", "hello world"),
+        (
+            "this is an **inline** that i hope is `nice` and _smooth_",
+            "this is an inline that i hope is [nice] and\nsmooth",
+        ),
         ("`hello` *world*. **this** is important", "[hello] world. this is important"),
     ],
 )
