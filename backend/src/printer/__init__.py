@@ -69,11 +69,20 @@ class Printer:
         else:
             self.driver.textln(text)
 
-    def printMarkdown(
-        self, text_md: str, header: Optional[str] = None, footer: Optional[str] = None
-    ) -> None:
-        tokens = self.md.parse(text_md)
-        return self._walk_markdown(tokens)
+    def printMarkdown(self, text_md: str, header: str, footer: str) -> None:
+        tokens_header = self.md.parse(header)
+        self._walk_markdown(tokens_header)
+        self._reset()
+        self._ln()
+        tokens_body = self.md.parse(text_md)
+        self._walk_markdown(tokens_body)
+        self._ln(2)
+        tokens_footer = self.md.parse(footer)
+        self._walk_markdown(tokens_footer)
+        TextOptions(align="center").set_default(self.driver)
+        self._ln()
+        self._print("--" * 15)
+        self._ln(2)
 
     def _hr(self):
         self._print("-" * self.text_width)
@@ -94,6 +103,7 @@ class Printer:
         text = prefix
         format_queue = [{"position": len(text), "to": TextOptions()}]
         offset = 0
+        # todo add a qr code queue
         for child in token.children:
             match child.type:
                 case "text":
@@ -263,9 +273,6 @@ class Printer:
         self._ln(2)
         self._print(footer)
         TextOptions(align="center").set_default(self.driver)
-        self._ln()
-        self._print("--" * 15)
-        self._ln(2)
         self._ln()
         self._print("--" * 15)
         self._ln(2)
