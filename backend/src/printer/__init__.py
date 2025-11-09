@@ -97,19 +97,19 @@ class Printer:
                     text += tx
                 case "strong_open":
                     format_queue.append(
-                        {"position": len(text) - 1, "to": TextOptions(bold=True)}
+                        {"position": len(text), "to": TextOptions(bold=True)}
                     )
                 case "strong_close":
                     format_queue.append(
-                        {"position": len(text) - 1, "to": TextOptions(bold=False)}
+                        {"position": len(text), "to": TextOptions(bold=False)}
                     )
                 case "em_open":
                     format_queue.append(
-                        {"position": len(text) - 1, "to": TextOptions(underlineType=1)}
+                        {"position": len(text), "to": TextOptions(underlineType=1)}
                     )
                 case "em_close":
                     format_queue.append(
-                        {"position": len(text) - 1, "to": TextOptions(underlineType=0)}
+                        {"position": len(text), "to": TextOptions(underlineType=0)}
                     )
                 case "code_inline":
                     tx, offset = self._insertln(f"[{child.content}]", offset)
@@ -133,10 +133,10 @@ class Printer:
             to.set(self.driver)
             if i == len(format_queue) - 1:
                 # print everything until the end
-                self._printInline(text[pos + 1 :].rstrip())
+                self._printInline(text[pos:].rstrip())
             else:
                 next_pos = format_queue[i + 1]["position"]
-                self._printInline(text[pos + 1 : next_pos - 1])
+                self._printInline(text[pos:next_pos])
         self._reset()
         self._ln()
 
