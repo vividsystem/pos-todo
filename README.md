@@ -123,7 +123,7 @@ This file uses a `.env` in `backend/` file for configuration
 
 ## Usage
 - Go to the website 
-- type `/pos-todo <xour text>` 
+- type `/pos-todo <your text>` 
 - or use the `Print to pos-todo` shortcut on an already sent slack mesage
 
 ## Acknowledgments

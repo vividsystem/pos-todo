@@ -32,7 +32,7 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
     try:
         payload = json.loads(message.payload)
     except Exception:
-        client.publish(
+        return client.publish(
             "pos-todo/status",
             json.dumps({"status": "error", "message": "payload couldn't be parsed"}),
         )
@@ -50,36 +50,6 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
 
     dt = datetime.datetime.now()
     header = f"{dt.isoformat(timespec='seconds')}:"
-    #     header = """
-    #
-    #                    .-'\\
-    #                    \\:. \\
-    #                    |:.  \\
-    #                    /::'  \\
-    #                 __/:::.   \\
-    #         _.-'-.'`  `'.-'`'._\\-"`"-'-,
-    #      .`;    :      :     :      :   : `.
-    #     / :     :      :                 :  \\
-    #    /        :/\\          :   /\\ :   :  \\
-    #   ;   :     /\\ \\   :     :  /\\ \\    :  ;
-    #  .    :    /  \\ \\          /  \\ \\       .
-    #  ;        /_)__\\ \\ :     :/_)__\\ \\  :   ;
-    # ;         `-----`' : ,   :`-----`'          ;
-    # |    :      :       / \\         :     :    |
-    # |                  / \\ \\ :            :   |
-    # |    :      :     /___\\ \\:      :         |
-    # |    :      :     `----`'       :           |
-    # ;        |;-.,__   :     :   __.-'|   :     ;
-    #  ;    :  ||   \\ \\``/'---'\\`\\` /  ||     ;
-    #   .    :  \\   \\_\\/       \\_\\/   // '  .
-    #            \\'._    /\\     /\\ _.-'/   :  ;
-    #     \\   :   `._`'-/ /\\._./ /\\  .'  :  /
-    #      `\\  :     `-.\\/__\\__\\/_.;'   : /`
-    #        `\\  '   :   :        :   :  /`
-    #          `-`.__`        :   :__.'-`
-    #                `-..`.__.'..-
-    #
-    # pumpkin says:"""
     if "header" in payload and isinstance(payload["header"], str):
         header = payload["header"]
 
@@ -105,7 +75,7 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
 
 
 @client.topic_callback("pos-todo/print/markdown")
-def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTMessage):
+def on_message_print(client: mqtt.Client, printer: Printer, message: mqtt.MQTTMessage):
     try:
         payload = json.loads(message.payload)
     except Exception:
@@ -136,7 +106,7 @@ def on_message_print(client: mqtt.Client, userdata: Printer, message: mqtt.MQTTM
         footer = payload["footer"]
 
     print(f"print message: {payload['message']}")
-    userdata.printMarkdown(payload["message"], header, footer)
+    printer.printMarkdown(payload["message"], header, footer)
     client.publish(
         "pos-todo/status",
         json.dumps(
