@@ -16,7 +16,7 @@ class TextOptions:
     smooth: Optional[bool] = None
     flipTextDirection: Optional[bool] = None
 
-    def set(self, printer: Escpos):
+    def set_default(self, printer: Escpos):
         printer.set_with_default(
             align=self.align,
             font=self.font,
@@ -30,7 +30,34 @@ class TextOptions:
             or (self.width is not None and self.height != 2),
             width=_clip(self.width, 1, 8) if self.width != 2 else None,
             height=_clip(self.height, 1, 8) if self.height != 2 else None,
-            density=_clip(self.invertColors, 0, 8),
+            density=_clip(self.density, 0, 8),
+            invert=self.invertColors,
+            smooth=(
+                self.smooth
+                if self.height is not None
+                and self.height >= 4
+                and self.width is not None
+                and self.width >= 4
+                else None
+            ),
+            flip=self.flipTextDirection,
+        )
+
+    def set(self, printer: Escpos):
+        printer.set(
+            align=self.align,
+            font=self.font,
+            bold=self.bold,
+            underline=_clip(self.underlineType, 0, 2)
+            if self.underlineType is not None
+            else None,
+            double_height=self.height == 2,
+            double_width=self.width == 2,
+            custom_size=(self.width is not None and self.width != 2)
+            or (self.width is not None and self.height != 2),
+            width=_clip(self.width, 1, 8) if self.width != 2 else None,
+            height=_clip(self.height, 1, 8) if self.height != 2 else None,
+            density=_clip(self.density, 0, 8),
             invert=self.invertColors,
             smooth=(
                 self.smooth

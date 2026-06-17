@@ -12,6 +12,8 @@ Print via a:
 - (pretty fall-themed) website 
     -> supports customized footer and header
 - slackbot to print slack messages
+- Markdown support
+- QR support in markdown via `[link](qr:url)`
 
 
 ## Hardware Requirements
@@ -30,6 +32,25 @@ Print via a:
 (for all instances the repo has to be cloned first)
 ### Backend
 2. Setup a MQTT Server (you can use the docker compose for that)
+Just copy this config to `./config/mosquitto.conf`
+```conf
+# Allow anonymous connections (for testing)
+allow_anonymous true
+
+# Persistence and data directories
+persistence true
+persistence_location /mosquitto/data/
+
+# Logging
+log_dest file /mosquitto/log/mosquitto.log
+
+# Default MQTT listener
+listener 1883
+
+# WebSocket listener (optional)
+listener 9001
+protocol websockets
+```
 3. Setup your POS-Printer
 If you have a USB-Printer make a udev rule for it.
 For that find out your product id and vendor id using for example `lsusb`
@@ -102,7 +123,7 @@ This file uses a `.env` in `backend/` file for configuration
 
 ## Usage
 - Go to the website 
-- type `/pos-todo <xour text>` 
+- type `/pos-todo <your text>` 
 - or use the `Print to pos-todo` shortcut on an already sent slack mesage
 
 ## Acknowledgments

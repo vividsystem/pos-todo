@@ -11,3 +11,16 @@ dependencies = [
     "pydantic-settings>=2.11.0",
     "python-escpos[all]>=3.1",
 ]
+
+
+[depency-groups]
+dev = [
+    "pytest",
+    "pytest-cov",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "-ra"
+
+[tool.uv]
